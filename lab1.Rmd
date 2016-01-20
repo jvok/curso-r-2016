@@ -8,12 +8,23 @@ output: html_document
 ```{r}
 moeda <- function(p) {
   x <- runif(1)
-  if(x < p) {
-    TRUE
-  } else {
-    FALSE
-  } 
+  ifelse(x > p, 1, 0)
 }
 
-moeda(0.5)
+moedas <- function(n, p) {
+  y <- integer(length = n)
+  for(i in 1:n) {
+    y[i] <- moeda(p)
+  }
+}
+moedas(15, 0.5)
 ```
+
+
+
+
+
+
+
+
+
