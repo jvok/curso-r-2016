@@ -24,6 +24,7 @@ proporcao <- function(resultados) {
   z
 }
 proporcao(moedas(0.5, 100))
+
 ```
 
 
