@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
     "path" : "~/Desktop/Curso R",
+=======
+    "path" : "~/Curso R",
+>>>>>>> 31926f0ae0afb86a6f0f1ffccbc7643f08d25338
     "sortOrder" : [
         {
             "ascending" : true,
