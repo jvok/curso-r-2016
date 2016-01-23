@@ -1,6 +1,6 @@
 ---
 title: "Lab1"
-author: "Curso R de verão 2016"
+author: "Joao Vitor Ogata Kodama"
 date: "18 de janeiro de 2016"
 output: html_document
 ---
@@ -23,21 +23,33 @@ proporcao <- function(resultados) {
   z <- sum(resultados)/length(resultados)
   z
 }
-proporcao(moedas(0.5, 100))
 
 #4
-
+simulacao <- function(k, p, n) {
+  simul <- vector()
+  for(i in 1:k) {
+    simul <- c(simul, proporcao(moedas(p, n)))
+  }
+  simul
+}
 ```
 
+```{r}
+# Simulação k = 1000, p = 50%, n = 10
+hist(simulacao(1000, 0.5, 10))
+```
 
+```{r}
+# Simulação k = 1000, p = 50%, n = 100
+hist(simulacao(1000, 0.5, 100))
+```
 
+```{r}
+# Simulação k = 1000, p = 90%, n = 10
+hist(simulacao(1000, 0.9, 10))
+```
 
-
-
-
-
-
-
-
-
-
+```{r}
+# Simulação k = 1000, p = 10%, n = 100
+hist(simulacao(1000, 0.1, 100))
+```
