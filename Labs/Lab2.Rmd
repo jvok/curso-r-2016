@@ -4,23 +4,35 @@ author: "Joao Vitor Ogata Kodama"
 date: "January 26, 2016"
 output: html_document
 ---
+```{r}
+library(dplyr)
+library(readr)
+library(readxl)
+
+```
 
 ```{r}
 arq <- 'pnud_linux.xlsx'
 pnud.xlsx <- read_excel(arq)
-summary(pnud.xlsx)
+str(pnud.xlsx)
 ```
 
 ```{r}
 arq2 <- 'pnud_linux.txt'
-pnud.txt <- read.table(arq2, header = TRUE, stringsAsFactors = FALSE) %>%
-summary()
+pnud.txt <- read.table(arq2, header = TRUE, stringsAsFactors = FALSE)
+str(pnud.txt)
 ```
 
 ```{r}
-arq3 <- 'pnud_linux.csv' %>%
-pnud.csv <- read.csv(header = TRUE) %>%
-summary()
+arq3 <- 'pnud_linux.csv'
+pnud.csv <- read.csv(arq3, header = TRUE)
+str(pnud.csv)
+```
+
+```{r}
+arq4 <- 'pnud.sqlite'
+pnud.sql <- src_sqlite(arq4)
+str(pnud.sql)
 ```
 
 
