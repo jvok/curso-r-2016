@@ -1,11 +1,8 @@
 ---
-title: "Lab2"
+title: "lab2"
 author: "Joao Vitor Ogata Kodama"
 date: "January 26, 2016"
 output: html_document
 ---
 
-```{r}
-arq <- '
-```
 
