@@ -6,6 +6,21 @@ output: html_document
 ---
 
 ```{r}
-
+arq <- 'pnud_linux.xlsx'
+pnud.xlsx <- read_excel(arq)
+summary(pnud.xlsx)
 ```
+
+```{r}
+arq2 <- 'pnud_linux.txt'
+pnud.txt <- read.table(arq2, header = TRUE, stringsAsFactors = FALSE) %>%
+summary()
+```
+
+```{r}
+arq3 <- 'pnud_linux.csv' %>%
+pnud.csv <- read.csv(header = TRUE) %>%
+summary()
+```
+
 
