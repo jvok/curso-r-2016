@@ -80,12 +80,15 @@ flights %>%
 #Spread
 #1
 flights %>%
-  group_by(day) %>%
+  group_by(day, month) %>%
   summarise(atraso_medio=mean(dep_delay)) %>%
   ungroup() %>%
-  spread(month, atraso_medio) %>%
-  print(n=100)
+  spread(month, atraso_medio)
+#2
 ```
 
+```{r}
+
+```
 
 
