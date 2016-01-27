@@ -150,7 +150,18 @@ quakes %>%
   geom_map(aes(map_id = region), map = mapa, data = mapa)
   
 
-
+#Exemplo4
+diamonds %>% sample_n(10000) %>%
+  group_by(cut) %>%
+  mutate(correlacao = cor(carat, price)) %>% 
+  ungroup() %>% 
+  mutate(cut = paste(cut, "cor =", round(correlacao, 2))) %>% 
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(aes(colour = cut)) +
+  geom_text(aes(x = 3, y = 2500, label = round(correlacao, 2))) +
+  facet_wrap(~cut) +
+  labs(x = "Peso (Quilates)", y = "Preço (US$)") +
+  guides(colour = F)
 
 
 
