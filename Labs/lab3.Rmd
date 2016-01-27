@@ -6,6 +6,7 @@ output: html_document
 ---
 
 ```{r}
+#Pacotes
 install.packages("nycflights13")
 library(nycflights13)
 library(dplyr)
@@ -41,6 +42,50 @@ flights %>%
 ```{r}
 #Mutate
 #1
-
+flights %>% 
+  mutate(ganho_de_tempo = dep_delay - arr_delay, velocidade = distance / air_time * 60) %>% 
+  select(flight, dep_time, arr_time, ganho_de_tempo, velocidade)
+#2
+flights %>% 
+  mutate(minutos_totais = hour * 60 + minute + air_time, hour2 = minutos_totais %/% 60, minute2 = minutos_totais %% 60) %>% 
+  select(flight, origin, dest, hour, minute, air_time, hour2, minute2)
 ```
+
+```{r}
+#Summarise
+#1
+flights %>% 
+  summarise(mean(distance))
+#2
+por_mes <- flights %>% group_by(month)
+por_mes %>% summarise(mean(distance))
+#3
+por_mes <- flights %>% group_by(month)
+por_mes %>% summarise(mediana = median(distance), quartil1 = quantile(distance, probs = c(0.25), na.rm = FALSE), media = mean(distance), quartil3 = quantile(distance, probs = c(0.75), na.rm = FALSE))
+```
+
+```{r}
+#Arrange
+#1
+flights %>% 
+  select(flight, year, month, carrier, origin, dest, dep_delay) %>% 
+  arrange(dep_delay)
+#2
+flights %>% 
+  select(flight, year, month, carrier, origin, dest, dep_delay) %>% 
+  arrange(desc(dep_delay))
+```
+
+```{r}
+#Spread
+#1
+flights %>%
+  group_by(day) %>%
+  summarise(atraso_medio=mean(dep_delay)) %>%
+  ungroup() %>%
+  spread(month, atraso_medio) %>%
+  print(n=100)
+```
+
+
 
