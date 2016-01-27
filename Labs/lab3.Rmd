@@ -10,10 +10,37 @@ install.packages("nycflights13")
 library(nycflights13)
 library(dplyr)
 library(tidyr)
-
-
-flights %>% 
-  filter()
 ```
 
+```{r}
+#Filter
+#1
+flights %>% 
+  filter(month==1, year==2013)
+#2
+flights %>% 
+  filter(month<=2, year==2013)
+#3
+flights %>% 
+  filter(distance>1000)
+```
+
+```{r}
+#Select
+#1
+flights %>% 
+  select(month, dep_delay)
+#2
+flights %>% 
+  select(mes = month, atraso = dep_delay)
+#3
+flights %>% 
+  select(-tailnum, -origin, -dest)
+```
+
+```{r}
+#Mutate
+#1
+
+```
 
