@@ -80,15 +80,32 @@ flights %>%
 #Spread
 #1
 flights %>%
-  group_by(day, month) %>%
-  summarise(atraso_medio=mean(dep_delay)) %>%
-  ungroup() %>%
+  group_by(month, day) %>%
+  summarise(atraso_medio = mean(dep_delay, na.rm = T)) %>%
   spread(month, atraso_medio)
 #2
+flights %>%
+  group_by(day, hour) %>%
+  summarise(atraso_medio = mean(dep_delay, na.rm = T)) %>%
+  spread(day, atraso_medio)
 ```
 
 ```{r}
-
+#Gather
+#1
+flights %>%
+  group_by(month, day) %>%
+  summarise(atraso_medio = mean(dep_delay, na.rm = T)) %>%
+  spread(month, atraso_medio) %>% 
+  gather(month, atraso_medio, -day) %>% 
+  filter(atraso_medio != "")
+#2
+flights %>%
+  group_by(day, hour) %>%
+  summarise(atraso_medio = mean(dep_delay, na.rm = T)) %>%
+  spread(day, atraso_medio) %>% 
+  gather(day, atraso_medio, -hour) %>% 
+  filter(atraso_medio != "")
 ```
 
 
