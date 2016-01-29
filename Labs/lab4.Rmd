@@ -9,6 +9,7 @@ output: html_document
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+library(lubridate)
 ```
 
 ####geom_point
@@ -107,6 +108,27 @@ economics %>%
   ggplot(aes(y = unemploy_med, x = date_ano)) +
   geom_line(size = 0.5) +
   labs(x = "Data (ano)", y = "Desempregados (média anual)")
+
+#16
+economics %>% 
+  mutate(date_ano = year(date)) %>% 
+  group_by(date_ano) %>% 
+  summarise(unemploy_median = median(unemploy, na.rm = T)) %>% 
+  ggplot(aes(x = date_ano, y = unemploy_median)) +
+  geom_line()
+
+#17
+economics %>% 
+  mutate(taxa_desemprego = unemploy/pop, date_ano = year(date)) %>% 
+  group_by(date_ano) %>% 
+  summarise("pce_med" = mean(pce, na.rm = T), "psavert_med" = mean(psavert, na.rm = T), "taxa_med" = mean(taxa_desemprego, na.rm = T)) %>% 
+  gather(pce_med, valor, -date_ano) %>% 
+  ggplot(aes(x = date_ano, y = valor)) +
+  geom_line(size = 1) +
+  facet_wrap(~pce_med, scales = "free_y", dir = "v")
+
+
+
 ```
 
 
