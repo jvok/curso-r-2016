@@ -8,6 +8,7 @@ output: html_document
 ```{r}
 library(ggplot2)
 library(dplyr)
+library(tidyr)
 ```
 
 ####geom_point
@@ -82,10 +83,33 @@ diamonds %>%
 ```{r}
 #12
 economics %>% 
-  ggplot(aes(x = ))
+  ggplot(aes(x = unemploy, y = uempmed)) +
+  geom_point(alpha = 0.35)
+
+#13
+library(lubridate)
+economics %>% 
+  mutate(date_ano = year(date)) %>% 
+  ggplot(aes(x = unemploy, y = uempmed, colour = date_ano)) +
+  geom_point(alpha = 0.50) +
+  labs(colour = "Ano")
+
+#14
+economics %>% 
+  ggplot(aes(y = unemploy, x = date)) +
+  geom_line(size = 0.5)
+
+#15
+economics %>% 
+  mutate(date_ano = year(date)) %>% 
+  group_by(date_ano) %>% 
+  summarise(unemploy_med = mean(unemploy, na.rm = T)) %>% 
+  ggplot(aes(y = unemploy_med, x = date_ano)) +
+  geom_line(size = 0.5) +
+  labs(x = "Data (ano)", y = "Desempregados (média anual)")
 ```
 
-View(economics)
+
 
 
 
