@@ -4,27 +4,108 @@ author: "Curso R de verão 2016"
 date: "29 de janeiro de 2016"
 output: html_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+library(ggplot2)
+library(magrittr)
+library(tidyr)
+library(dplyr)
+library(jpeg)
+install.packages("jpeg")
+library(tree)
 ```
 
-## R Markdown
+```{r}
+# a) carrega uma imagem jpeg no R 
+img <- readJPEG("purple_wave.jpg")
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# b) transforma o array da imagem em data.frame com infos de posicao (x,y) e cor (r,g,b)
+# dimensões da imagem
+img_dim <- dim(img)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# RGB para data.frame
+img_df <- data.frame(
+  x = rep(1:img_dim[2], each = img_dim[1]),
+  y = rep(img_dim[1]:1, img_dim[2]),
+  r = as.vector(img[,,1]),
+  g = as.vector(img[,,2]),
+  b = as.vector(img[,,3])
+) %>%
+  mutate(cor = rgb(r, g, b),
+         id = 1:n())
 
-```{r cars}
-summary(cars)
+View(img_df)
 ```
 
-## Including Plots
+```{r}
+# para reprodução
+set.seed(1) 
 
-You can also embed plots, for example:
+# Parte 1) x, y, r, g
+img_df_parte1 <- img_df %>% 
+  sample_frac(3/5) %>% # separando 3/5 do banco
+  mutate(b_backup = b, # backup do azul original
+         b = 0, # retirando o azul da imagem
+         cor = rgb(r, g, b)) # cor da imagem sem o azul
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+# Parte 2) x, y, r, g, b
+img_df_parte2 <- img_df %>% filter(!id%in%img_df_parte1$id) # filtra as linhas que estão na Parte 1
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+# Imagem sem o azul
+ggplot(data = img_df_parte1, aes(x = x, y = y)) + 
+  geom_point(colour = img_df_parte1$cor) +
+  labs(x = "x", y = "y", title = "Imagem sem B (azul)") +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+```
+
+```{r}
+# Apenas o azul da imagem
+ggplot(data = img_df_parte2, aes(x = x, y = y)) + 
+  geom_point(colour = img_df_parte2$cor) +
+  labs(x = "x", y = "y", title = "Imagem com apenas B (azul)") +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+```
+
+```{r}
+#1
+img_df_amostra <- img_df %>% 
+  sample_n(500,replace = FALSE)
+
+cor(img_df_amostra %>% 
+      select(-cor, -id)) %>% 
+  round(2)
+
+pairs(img_df_amostra %>%
+  select(-cor, -id))
+```
+
+```{r}
+#2
+modelo_lm <- lm(b ~ r, data = img_df_parte2)
+summary(modelo_lm)
+
+predito_lm <- predict(modelo_lm, img_df_parte1)
+img_df_parte1$new.col <- predito_lm #é preciso criar um novo "cor"
+img_df_parte1$new.cor <- rgb(img_df_parte1$r, img_df_parte1$g, abs(img_df_parte1$new.col)) #transformando os números em positivos
+ggplot(data = img_df_parte1, aes(x = x, y = y)) + 
+  geom_point(colour = img_df_parte1$new.cor) +
+  labs(x = "x", y = "y", title = "Imagem Prevista") +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
