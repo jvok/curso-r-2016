@@ -126,9 +126,6 @@ economics %>%
   ggplot(aes(x = date_ano, y = valor)) +
   geom_line(size = 1) +
   facet_wrap(~pce_med, scales = "free_y", dir = "v")
-
-
-
 ```
 
 
