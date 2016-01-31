@@ -9,8 +9,9 @@ library(ggplot2)
 library(magrittr)
 library(tidyr)
 library(dplyr)
-library(jpeg)
 install.packages("jpeg")
+library(jpeg)
+install.packages("tree")
 library(tree)
 ```
 
@@ -52,19 +53,30 @@ img_df_parte2 <- img_df %>% filter(!id%in%img_df_parte1$id) # filtra as linhas q
 ```
 
 ```{r}
-# Imagem sem o azul
-ggplot(data = img_df_parte1, aes(x = x, y = y)) + 
-  geom_point(colour = img_df_parte1$cor) +
-  labs(x = "x", y = "y", title = "Imagem sem B (azul)") +
+#Wave original
+wave_original <- ggplot(data = img_df, aes(x = x, y = y)) + 
+  geom_point(colour = img_df$cor) +
+  labs(x = "x", y = "y", title = "Original") +
   coord_fixed(ratio = 1) +
   theme_bw()
+wave_original
 ```
 
 ```{r}
-# Apenas o azul da imagem
+# Imagem sem o azul
+wave_semazul <- ggplot(data = img_df_parte1, aes(x = x, y = y)) + 
+  geom_point(colour = img_df_parte1$cor) +
+  labs(x = "x", y = "y", title = "Imagem sem azul") +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+wave_semazul
+```
+
+```{r}
+# Com o azul da imagem
 ggplot(data = img_df_parte2, aes(x = x, y = y)) + 
   geom_point(colour = img_df_parte2$cor) +
-  labs(x = "x", y = "y", title = "Imagem com apenas B (azul)") +
+  labs(x = "x", y = "y", title = "Imagem com B (azul)") +
   coord_fixed(ratio = 1) +
   theme_bw()
 ```
@@ -90,22 +102,127 @@ summary(modelo_lm)
 predito_lm <- predict(modelo_lm, img_df_parte1)
 img_df_parte1$new.col <- predito_lm #é preciso criar um novo "cor"
 img_df_parte1$new.cor <- rgb(img_df_parte1$r, img_df_parte1$g, abs(img_df_parte1$new.col)) #transformando os números em positivos
-ggplot(data = img_df_parte1, aes(x = x, y = y)) + 
+wave_predito_lm <- ggplot(data = img_df_parte1, aes(x = x, y = y)) + 
   geom_point(colour = img_df_parte1$new.cor) +
-  labs(x = "x", y = "y", title = "Imagem Prevista") +
+  labs(x = "x", y = "y", title = "Previsão LM") +
   coord_fixed(ratio = 1) +
   theme_bw()
+wave_predito_lm
 ```
 
+```{r}
+#3
+modelo_tree <- tree(b ~ r, data = img_df_parte2)
+summary(modelo_tree)
 
+predito_tree <- predict(modelo_tree, img_df_parte1)
+img_df_parte1$new.col <- predito_tree #é preciso criar um novo "cor"
+img_df_parte1$new.cor <- rgb(img_df_parte1$r, img_df_parte1$g, abs(img_df_parte1$new.col)) #transformando os números em positivos
+wave_predito_tree <- ggplot(data = img_df_parte1, aes(x = x, y = y)) + 
+  geom_point(colour = img_df_parte1$new.cor) +
+  labs(x = "x", y = "y", title = "Previsão Tree") +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+wave_predito_tree
+```
 
+```{r}
+#5
+img2 <- readJPEG("xadrez_colorido.jpg")
 
+img_dim2 <- dim(img2)
 
+img_df2 <- data.frame(
+  x = rep(1:img_dim2[2], each = img_dim2[1]),
+  y = rep(img_dim2[1]:1, img_dim2[2]),
+  r = as.vector(img2[,,1]),
+  g = as.vector(img2[,,2]),
+  b = as.vector(img2[,,3])
+) %>%
+  mutate(cor = rgb(r, g, b),
+         id = 1:n())
 
+View(img_df2)
 
+set.seed(1)
 
+img_df_parte1a <- img_df2 %>% 
+  sample_frac(3/5) %>% # separando 3/5 do banco
+  mutate(b_backup = b, # backup do azul original
+         b = 0, # retirando o azul da imagem
+         cor = rgb(r, g, b)) # cor da imagem sem o azul
 
+img_df_parte2a <- img_df2 %>% filter(!id%in%img_df_parte1a$id)
 
+#Imagem original
+xadrez_original <- ggplot(data = img_df2, aes(x = x, y = y)) + 
+  geom_point(colour = img_df2$cor) +
+  labs(x = "x", y = "y", title = "Original") +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+xadrez_original
 
+#Imagem com o azul no xadrez
+ggplot(data = img_df_parte2a, aes(x = x, y = y)) + 
+  geom_point(colour = img_df_parte2a$cor) +
+  labs(x = "x", y = "y", title = "Imagem com B (azul)") +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+#Imagem sem o azul no xadrez
+ggplot(data = img_df_parte1a, aes(x = x, y = y)) + 
+  geom_point(colour = img_df_parte1a$cor) +
+  labs(x = "x", y = "y", title = "Imagem sem B (azul)") +
+  coord_fixed(ratio = 1) +
+  theme_bw()
 
+#Análise
+img_df_amostra2 <- img_df2 %>% 
+  sample_n(500,replace = FALSE)
 
+cor(img_df_amostra2 %>% 
+      select(-cor, -id)) %>% 
+  round(2)
+
+pairs(img_df_amostra2 %>%
+  select(-cor, -id))
+
+modelo_lm2 <- lm(b ~ x, data = img_df_parte2a)
+summary(modelo_lm2)
+
+predito_lm2 <- predict(modelo_lm2, img_df_parte1a)
+img_df_parte1a$new.col <- predito_lm2 #é preciso criar um novo "cor"
+img_df_parte1a$new.cor <- rgb(img_df_parte1a$r, img_df_parte1a$g, abs(img_df_parte1a$new.col)) #transformando os números em positivos
+xadrez_predito_lm <- ggplot(data = img_df_parte1a, aes(x = x, y = y)) + 
+  geom_point(colour = img_df_parte1a$new.cor) +
+  labs(x = "x", y = "y", title = "Previsão LM") +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+xadrez_predito_lm
+
+modelo_tree2 <- tree(b ~ x, data = img_df_parte2a)
+summary(modelo_tree2)
+
+predito_tree2 <- predict(modelo_tree2, img_df_parte1a)
+img_df_parte1a$new.col <- predito_tree2 #é preciso criar um novo "cor"
+img_df_parte1a$new.cor <- rgb(img_df_parte1a$r, img_df_parte1a$g, abs(img_df_parte1a$new.col)) #transformando os números em positivos
+xadrez_predito_tree <- ggplot(data = img_df_parte1a, aes(x = x, y = y)) + 
+  geom_point(colour = img_df_parte1a$new.cor) +
+  labs(x = "x", y = "y", title = "Previsão Tree") +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+xadrez_predito_tree
+```
+
+```{r}
+#Gráficos lado a lado para comparar
+install.packages("gridExtra")
+library(gridExtra)
+install.packages("cowplot")
+library(cowplot)
+
+#WAVE
+plot_grid(wave_original, wave_predito_lm, wave_predito_tree, ncol = 1, nrow = 3)
+
+#XADREZ
+plot_grid(xadrez_original, xadrez_predito_lm, xadrez_predito_tree, ncol = 1, nrow = 3)
+```
