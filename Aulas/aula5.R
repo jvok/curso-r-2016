@@ -62,7 +62,7 @@ step(ajuste_lm_completo, direction = "backward")
 step(ajuste_lm_completo, direction = "both")
 
 #glm
-ajuste_gama <- glm(Y ~X + I(X^2) + Z,
+ajuste_gama <- glm(Y ~ X + I(X^2) + Z,
                    data = dados,
                    family = Gamma(link = "log"))
 
