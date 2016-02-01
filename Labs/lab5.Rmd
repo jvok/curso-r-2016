@@ -186,8 +186,8 @@ cor(img_df_amostra2 %>%
 pairs(img_df_amostra2 %>%
   select(-cor, -id))
 
-modelo_lm2 <- lm(b ~ x, data = img_df_parte2a)
-summary(modelo_lm2)
+modelo_lm2 <- lm(b ~ x + r + g , data = img_df_parte2a)
+
 
 predito_lm2 <- predict(modelo_lm2, img_df_parte1a)
 img_df_parte1a$new.col <- predito_lm2 #é preciso criar um novo "cor"
