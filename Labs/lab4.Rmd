@@ -46,7 +46,8 @@ diamonds %>%
 #6
 diamonds %>% 
   ggplot(aes(price, fill = price)) +
-    geom_density(position = "fill")
+  geom_histogram(aes(y = ..density..),colour = "white", fill = "darkslateblue") +
+  geom_density()
 ```
 
 ####geom_boxplot
@@ -113,9 +114,13 @@ economics %>%
 economics %>% 
   mutate(date_ano = year(date)) %>% 
   group_by(date_ano) %>% 
-  summarise(unemploy_median = median(unemploy, na.rm = T)) %>% 
+  summarise(unemploy_median = median(unemploy, na.rm = T),
+            unemploy_1quart = quantile(unemploy, 0.01, na.rm = T),
+            unemploy_3quart = quantile(unemploy, 0.99, na.rm = T)) %>%
   ggplot(aes(x = date_ano, y = unemploy_median)) +
-  geom_line()
+  geom_line()+
+  geom_ribbon(aes(ymin = unemploy_1quart, ymax = unemploy_3quart), alpha = 0.2)
+
 
 #17
 economics %>% 
