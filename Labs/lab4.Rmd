@@ -132,15 +132,3 @@ economics %>%
   geom_line(size = 1) +
   facet_wrap(~pce_med, scales = "free_y", dir = "v")
 ```
-
-
-
-
-
-
-
-
-
-
-
-
