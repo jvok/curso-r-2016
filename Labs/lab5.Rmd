@@ -226,3 +226,4 @@ plot_grid(wave_original, wave_predito_lm, wave_predito_tree, ncol = 1, nrow = 3)
 #XADREZ
 plot_grid(xadrez_original, xadrez_predito_lm, xadrez_predito_tree, ncol = 1, nrow = 3)
 ```
+
