@@ -34,6 +34,3 @@ arq4 <- 'pnud.sqlite'
 pnud.sql <- src_sqlite(arq4)
 str(pnud.sql)
 ```
-
-
-
